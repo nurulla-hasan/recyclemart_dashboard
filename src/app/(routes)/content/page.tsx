@@ -7,13 +7,13 @@ export default async function ContentPage() {
   const initialData = res?.success ? res.data : {};
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 max-w-full space-y-6 overflow-x-hidden">
       <PageHeader
         title="Content Management"
         description="Manage homepage carousel banners and advertisement sections."
       />
-      
-      <div className="container mx-auto">
+
+      <div className="min-w-0 max-w-full overflow-x-hidden">
         <ContentManager initialData={initialData} />
       </div>
     </div>
