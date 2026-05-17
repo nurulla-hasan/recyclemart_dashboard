@@ -133,6 +133,7 @@ export function ContentManager({ initialData }: ContentManagerProps) {
     setUpdatingLogo(true);
     const formData = new FormData();
     formData.append("logo", file);
+    formData.append("data", JSON.stringify({}));
 
     try {
       const res = await updateWebsiteLogo(formData);
@@ -168,15 +169,15 @@ export function ContentManager({ initialData }: ContentManagerProps) {
   };
 
   const ImageCard = ({ id, label, currentImage }: { id: string; label: string; currentImage?: string }) => (
-    <Card className="p-0 overflow-hidden group relative">
-      <CardHeader className="p-3 bg-muted/50 border-b">
-        <CardTitle className="text-sm font-medium flex items-center gap-2">
+    <Card className="group relative min-w-0 overflow-hidden p-0">
+      <CardHeader className="min-w-0 border-b bg-muted/50 p-3">
+        <CardTitle className="flex min-w-0 items-center gap-2 text-sm font-medium">
           <ImageIcon className="h-4 w-4 text-primary" />
-          {label}
+          <span className="min-w-0 truncate">{label}</span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-0">
-        <div className="relative aspect-video bg-muted flex items-center justify-center">
+      <CardContent className="min-w-0 p-0">
+        <div className="relative flex aspect-video w-full min-w-0 items-center justify-center overflow-hidden bg-muted">
           {currentImage ? (
             <Image
               src={currentImage}
@@ -185,13 +186,13 @@ export function ContentManager({ initialData }: ContentManagerProps) {
               className="object-cover transition-transform group-hover:scale-105"
             />
           ) : (
-            <div className="text-muted-foreground flex flex-col items-center gap-2">
+            <div className="flex min-w-0 flex-col items-center gap-2 text-muted-foreground">
               <ImageIcon className="h-8 w-8 opacity-20" />
               <span className="text-xs">No image uploaded</span>
             </div>
           )}
           
-          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+          <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
             <Button
               variant="secondary"
               size="sm"
@@ -215,7 +216,7 @@ export function ContentManager({ initialData }: ContentManagerProps) {
   );
 
   return (
-    <div className="space-y-8 pb-20">
+    <div className="space-y-6">
       <input
         type="file"
         ref={fileInputRef}
@@ -225,7 +226,7 @@ export function ContentManager({ initialData }: ContentManagerProps) {
       />
 
       {/* Website Logo */}
-      <section className="space-y-4">
+      <section className="min-w-0 space-y-4 overflow-hidden">
         <div className="flex flex-col gap-2 border-b pb-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="flex items-center gap-2 text-lg font-semibold sm:text-xl">
             <ImageIcon className="h-5 w-5 text-primary" />
@@ -234,10 +235,10 @@ export function ContentManager({ initialData }: ContentManagerProps) {
           <p className="text-sm italic text-muted-foreground">Recommended: transparent PNG</p>
         </div>
 
-        <Card className="p-4">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-4">
-              <div className="relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-muted">
+        <Card className="min-w-0 max-w-full overflow-hidden p-4">
+          <div className="grid min-w-0 max-w-full grid-cols-1 gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+            <div className="flex min-w-0 max-w-full flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+              <div className="relative flex h-20 w-20 max-w-20 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-muted">
                 {data.websiteLogo ? (
                   <Image
                     src={data.websiteLogo}
@@ -249,37 +250,41 @@ export function ContentManager({ initialData }: ContentManagerProps) {
                   <ImageIcon className="h-8 w-8 text-muted-foreground" />
                 )}
               </div>
-              <div>
-                <p className="font-medium">Current website logo</p>
-                <p className="text-sm text-muted-foreground">
+              <div className="min-w-0">
+                <p className="truncate font-medium">Current website logo</p>
+                <p className="wrap-break-word text-sm text-muted-foreground">
                   This logo will appear on the website navbar.
                 </p>
               </div>
             </div>
 
-            <Button asChild disabled={updatingLogo} className="w-full sm:w-fit">
-              <Label className="cursor-pointer">
-                {updatingLogo ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Upload className="h-4 w-4" />
-                )}
-                Update Logo
-                <Input
-                  type="file"
-                  accept="image/*"
-                  className="sr-only"
-                  onChange={handleLogoChange}
-                  disabled={updatingLogo}
-                />
-              </Label>
+            <Input
+              id="website-logo-upload"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleLogoChange}
+              disabled={updatingLogo}
+            />
+            <Button
+              type="button"
+              disabled={updatingLogo}
+              className="w-full justify-center sm:w-auto"
+              onClick={() => document.getElementById("website-logo-upload")?.click()}
+            >
+              {updatingLogo ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Upload className="h-4 w-4" />
+              )}
+              Update Logo
             </Button>
           </div>
         </Card>
       </section>
 
       {/* Top Navbar Notices Editor */}
-      <section className="space-y-4">
+      <section className="min-w-0 space-y-4 overflow-hidden">
         <div className="flex flex-col gap-3 border-b pb-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between lg:justify-start">
             <h2 className="flex items-center gap-2 text-lg font-semibold sm:text-xl">
@@ -307,8 +312,8 @@ export function ContentManager({ initialData }: ContentManagerProps) {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-          <Card className="p-4 overflow-hidden">
+        <div className="grid min-w-0 grid-cols-1 gap-6 xl:grid-cols-2">
+          <Card className="min-w-0 overflow-hidden p-4">
             <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
               {headings.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
@@ -318,8 +323,8 @@ export function ContentManager({ initialData }: ContentManagerProps) {
                 </div>
               ) : (
                 headings.map((heading, idx) => (
-                  <div key={idx} className="group flex items-end gap-2 animate-in fade-in slide-in-from-left-2 duration-300">
-                    <div className="flex-1 space-y-1.5">
+                  <div key={idx} className="group flex min-w-0 animate-in items-end gap-2 fade-in slide-in-from-left-2 duration-300">
+                    <div className="min-w-0 flex-1 space-y-1.5">
                       <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">
                         Notice {idx + 1}
                       </Label>
@@ -331,7 +336,7 @@ export function ContentManager({ initialData }: ContentManagerProps) {
                           newHeadings[idx] = e.target.value;
                           setHeadings(newHeadings);
                         }}
-                        className="h-9 focus-visible:ring-primary"
+                        className="h-9 min-w-0 focus-visible:ring-primary"
                       />
                     </div>
                     <Button 
@@ -349,15 +354,15 @@ export function ContentManager({ initialData }: ContentManagerProps) {
           </Card>
 
           {/* Notice Preview */}
-          <div className="flex flex-col justify-center space-y-4">
-            <div className="bg-primary text-primary-foreground py-2 px-4 rounded-lg shadow-lg relative overflow-hidden h-12 flex items-center justify-center">
+          <div className="flex min-w-0 flex-col justify-center space-y-4">
+            <div className="relative flex h-12 min-w-0 items-center justify-center overflow-hidden rounded-lg bg-primary px-4 py-2 text-primary-foreground shadow-lg">
               {headings.length > 0 ? (
                 <div 
                   key={activeHeadingIndex}
-                  className="flex items-center gap-2 animate-in slide-in-from-right fade-in duration-500"
+                  className="flex min-w-0 animate-in items-center gap-2 slide-in-from-right fade-in duration-500"
                 >
                   <Sparkles className="h-4 w-4 text-yellow-300" />
-                  <span className="text-sm font-medium">
+                  <span className="min-w-0 truncate text-sm font-medium">
                     {headings[activeHeadingIndex] || "Empty notice message..."}
                   </span>
                   <ChevronRight className="h-4 w-4 opacity-50" />
@@ -377,7 +382,7 @@ export function ContentManager({ initialData }: ContentManagerProps) {
       </section>
 
       {/* Website Layout Preview */}
-      <section className="space-y-4">
+      <section className="min-w-0 space-y-4 overflow-hidden">
         <div className="flex flex-col gap-2 border-b pb-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="flex items-center gap-2 text-lg font-semibold sm:text-xl">
             Live Preview (Website Layout)
@@ -387,9 +392,9 @@ export function ContentManager({ initialData }: ContentManagerProps) {
           </span>
         </div>
         
-        <div className="grid gap-4 md:grid-cols-12 md:h-[500px]">
+        <div className="grid min-w-0 grid-cols-1 gap-4 md:h-[500px] md:grid-cols-12">
           {/* Main Carousel Preview */}
-          <div className="relative aspect-video overflow-hidden rounded-2xl border-2 border-primary/20 bg-muted group md:col-span-8 md:aspect-auto">
+          <div className="group relative min-w-0 overflow-hidden rounded-2xl border-2 border-primary/20 bg-muted aspect-video md:col-span-8 md:aspect-auto">
             <div className="absolute top-2 left-2 z-10 bg-black/50 text-white text-[10px] px-2 py-1 rounded-md backdrop-blur-sm">
               Carousel {currentCarouselIndex}/5
             </div>
@@ -402,12 +407,12 @@ export function ContentManager({ initialData }: ContentManagerProps) {
                 key={currentCarouselIndex}
               />
             ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground">
+              <div className="flex h-full w-full min-w-0 flex-col items-center justify-center text-muted-foreground">
                 <ImageIcon className="h-12 w-12 opacity-20" />
                 <span className="text-sm">No Carousel Image {currentCarouselIndex}</span>
               </div>
             )}
-            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+            <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-colors group-hover:bg-black/40 group-hover:opacity-100">
               <Button size="sm" onClick={() => triggerUpload(`adImage${currentCarouselIndex}`)}>
                 Change Slide {currentCarouselIndex}
               </Button>
@@ -415,9 +420,9 @@ export function ContentManager({ initialData }: ContentManagerProps) {
           </div>
 
           {/* Side Ads Preview */}
-          <div className="grid gap-4 md:col-span-4 md:flex md:flex-col">
+          <div className="grid min-w-0 grid-cols-1 gap-4 md:col-span-4 md:flex md:flex-col">
             {[6, 7].map((num) => (
-              <div key={num} className="relative aspect-video flex-1 overflow-hidden rounded-2xl border-2 border-primary/20 bg-muted group md:aspect-auto">
+              <div key={num} className="group relative min-w-0 flex-1 overflow-hidden rounded-2xl border-2 border-primary/20 bg-muted aspect-video md:aspect-auto">
                 <div className="absolute top-2 left-2 z-10 bg-black/50 text-white text-[10px] px-2 py-1 rounded-md backdrop-blur-sm">
                   Ad Banner {num === 6 ? 'A' : 'B'}
                 </div>
@@ -429,11 +434,11 @@ export function ContentManager({ initialData }: ContentManagerProps) {
                     className="object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground">
+                  <div className="flex h-full w-full min-w-0 flex-col items-center justify-center text-muted-foreground">
                     <ImageIcon className="h-8 w-8 opacity-20" />
                   </div>
                 )}
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-colors group-hover:bg-black/40 group-hover:opacity-100">
                   <Button size="sm" className="h-7 text-[10px]" onClick={() => triggerUpload(`adImage${num}`)}>
                     Change Ad {num === 6 ? 'A' : 'B'}
                   </Button>
@@ -444,7 +449,7 @@ export function ContentManager({ initialData }: ContentManagerProps) {
         </div>
       </section>
 
-      <section className="space-y-4">
+      <section className="min-w-0 space-y-4 overflow-hidden">
         <div className="flex flex-col gap-2 border-b pb-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="flex items-center gap-2 text-lg font-semibold sm:text-xl">
             <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm text-primary">1-5</span>
@@ -452,7 +457,7 @@ export function ContentManager({ initialData }: ContentManagerProps) {
           </h2>
           <p className="text-sm italic text-muted-foreground">Recommended size: 1920x600px</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid min-w-0 grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3, 4, 5].map((num) => (
             <ImageCard
               key={`adImage${num}`}
@@ -464,7 +469,7 @@ export function ContentManager({ initialData }: ContentManagerProps) {
         </div>
       </section>
 
-      <section className="space-y-4">
+      <section className="min-w-0 space-y-4 overflow-hidden">
         <div className="flex flex-col gap-2 border-b pb-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="flex items-center gap-2 text-lg font-semibold sm:text-xl">
             <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm text-primary">6-7</span>
@@ -472,25 +477,26 @@ export function ContentManager({ initialData }: ContentManagerProps) {
           </h2>
           <p className="text-sm italic text-muted-foreground">Recommended size: 400x400px</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid min-w-0 grid-cols-1 gap-6 md:grid-cols-2">
           {[6, 7].map((num) => (
-            <div key={`adImage${num}`} className="space-y-4">
+            <div key={`adImage${num}`} className="min-w-0 space-y-4 overflow-hidden">
               <ImageCard
                 id={`adImage${num}`}
                 label={`Ad Banner ${num === 6 ? 'A' : 'B'}`}
                 currentImage={(data as any)[`adImage${num}`]}
               />
-              <Card className="p-4 border-dashed border-2">
-                <div className="space-y-2">
+              <Card className="min-w-0 overflow-hidden border-2 border-dashed p-4">
+                <div className="min-w-0 space-y-2">
                   <Label className="text-xs font-medium flex items-center gap-2">
                     <LinkIcon className="h-3 w-3" />
                     Ad Link (Click Destination)
                   </Label>
-                  <div className="flex flex-col gap-2 sm:flex-row">
+                  <div className="flex min-w-0 flex-col gap-2 sm:flex-row">
                     <Input 
                       placeholder="https://example.com/product"
                       defaultValue={(data as any)[`link${num - 5}`]}
                       id={`link-input-${num}`}
+                      className="min-w-0"
                     />
                     <Button 
                       size="sm"
