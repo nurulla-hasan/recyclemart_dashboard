@@ -4,12 +4,10 @@
 
 import { buildQueryString } from "@/lib/buildQueryString";
 import { serverFetch } from "@/lib/fetcher";
-import { updateTag } from "next/cache";
 
 export const getAllSubscribers = async (query: Record<string, string | string[] | undefined> = {}) => {
   try {
     return await serverFetch(`/subscription/admin${buildQueryString(query)}`, {
-      revalidate: 300,
       tags: ["PLAN-LIST"],
     });
   } catch {
@@ -21,7 +19,6 @@ export const getAllSubscribers = async (query: Record<string, string | string[] 
 export const getAllPlans = async (query: Record<string, string | string[] | undefined> = {}) => {
   try {
     return await serverFetch(`/subscription/plans${buildQueryString(query)}`, {
-      revalidate: 300,
       tags: ["PLAN-LIST"],
     });
   } catch {
@@ -33,9 +30,9 @@ export const createPlan = async (data: any) => {
   try {
     const res = await serverFetch("/subscription/plans", {
       method: "POST",
-      body: JSON.stringify(data),
+      body: data,
+      updateTag: "PLAN-LIST",
     });
-    if(res.success) {updateTag("PLAN-LIST")}
     return res;
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Failed to create plan";
@@ -47,9 +44,9 @@ export const updatePlan = async (planId: string, data: any) => {
   try {
     const res = await serverFetch(`/subscription/plans/${planId}`, {
       method: "PATCH",
-      body: JSON.stringify(data),
+      body: data,
+      updateTag: "PLAN-LIST",
     });
-    if(res.success) {updateTag("PLAN-LIST")}
     return res;
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Failed to update plan";
@@ -61,8 +58,8 @@ export const deletePlan = async (planId: string) => {
   try {
     const res = await serverFetch(`/subscription/plans/${planId}`, {
       method: "DELETE",
+      updateTag: "PLAN-LIST",
     });
-    if(res.success) {updateTag("PLAN-LIST")}
     return res;
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Failed to delete plan";

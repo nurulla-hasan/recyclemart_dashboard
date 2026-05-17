@@ -4,13 +4,12 @@
 import { buildQueryString } from "@/lib/buildQueryString";
 import { serverFetch } from "@/lib/fetcher";
 import { QueryParams } from "@/types/global.types";
-import { updateTag } from "next/cache";
 
 export const getAllLotteries = async (query: QueryParams = {}) => {
   
   try {
     return await serverFetch(`/lottery/admin${buildQueryString(query)}`, {
-      next: { tags: ["LOTTERY-LIST"], revalidate: 3600 },
+      tags: ["LOTTERY-LIST"],
     });
   } catch {
     return { success: false, data: [], meta: {} };
@@ -23,8 +22,8 @@ export const createLottery = async (formData: FormData) => {
     const res = await serverFetch("/lottery", {
       method: "POST",
       body: formData,
+      updateTag: "LOTTERY-LIST",
     });
-    if (res.success) updateTag("LOTTERY-LIST");
     return res;
   } catch (error: any) {
     return { success: false, message: error?.message || "Failed to create lottery" };
@@ -36,8 +35,8 @@ export const updateLottery = async (id: string, formData: FormData) => {
     const res = await serverFetch(`/lottery/${id}`, {
       method: "PATCH",
       body: formData,
+      updateTag: "LOTTERY-LIST",
     });
-    if (res.success) updateTag("LOTTERY-LIST");
     return res;
   } catch (error: any) {
     return { success: false, message: error?.message || "Failed to update lottery" };
@@ -49,8 +48,8 @@ export const runLotteryDraw = async (id: string, winningToken?: string) => {
     const query = winningToken ? `?winningToken=${winningToken}` : "";
     const res = await serverFetch(`/lottery/${id}/draw${query}`, {
       method: "POST",
+      updateTag: "LOTTERY-LIST",
     });
-    if (res.success) updateTag("LOTTERY-LIST");
     return res;
   } catch (error: any) {
     return { success: false, message: error?.message || "Failed to run draw" };

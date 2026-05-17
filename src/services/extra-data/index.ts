@@ -2,7 +2,6 @@
 "use server";
 
 import { serverFetch } from "@/lib/fetcher";
-import { updateTag } from "next/cache";
 
 export const getExtraData = async () => {
   try {
@@ -20,10 +19,8 @@ export const upsertExtraData = async (formData: FormData) => {
     const res = await serverFetch("/extra-data", {
       method: "POST",
       body: formData,
+      updateTag: "extra-data",
     });
-    if (res.success) {
-      updateTag("extra-data");
-    }
     return res;
   } catch (error: any) {
     return { success: false, message: error?.message || "Failed to update extra data" };
@@ -34,11 +31,9 @@ export const updateExtraLink = async (linkKey: string, link: string) => {
   try {
     const res = await serverFetch("/extra-data/link", {
       method: "POST",
-      body: JSON.stringify({ linkKey, link }),
+      body: { linkKey, link },
+      updateTag: "extra-data",
     });
-    if (res.success) {
-      updateTag("extra-data");
-    }
     return res;
   } catch (error: any) {
     return { success: false, message: error?.message || "Failed to update link" };
@@ -49,11 +44,9 @@ export const updateExtraHeading = async (heading: string[]) => {
   try {
     const res = await serverFetch("/extra-data/heading", {
       method: "POST",
-      body: JSON.stringify({ heading }),
+      body: { heading },
+      updateTag: "extra-data",
     });
-    if (res.success) {
-      updateTag("extra-data");
-    }
     return res;
   } catch (error: any) {
     return { success: false, message: error?.message || "Failed to update heading" };

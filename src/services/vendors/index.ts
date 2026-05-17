@@ -2,13 +2,11 @@
 "use server";
 import { buildQueryString } from "@/lib/buildQueryString";
 import { serverFetch } from "@/lib/fetcher";
-import { updateTag } from "next/cache";
 
 // GET ALL VENDORS
 export const getAllVendors = async (query: Record<string, string | string[] | undefined> = {}) => {
   try {
     return await serverFetch(`/vendor/admin${buildQueryString(query)}`, {
-      revalidate: 300,
       tags: ["VENDOR-LIST"],
     });
   } catch {
@@ -21,9 +19,9 @@ export const approveVendor = async (vendorId: string) => {
   try {
     const result = await serverFetch(`/vendor/${vendorId}/approve`, {
       method: "PATCH",
+      updateTag: "VENDOR-LIST",
     });
 
-    if (result?.success) updateTag("VENDOR-LIST");
     return result;
  } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Failed to approve vendor";
@@ -36,11 +34,11 @@ export const rejectVendor = async (vendorId: string, reason: string): Promise<an
   try {
     const result = await serverFetch(`/vendor/${vendorId}/reject`, {
         method: "PATCH",
-        body: JSON.stringify({ reason }),
+        body: { reason },
+        updateTag: "VENDOR-LIST",
       }
     );
 
-    if (result?.success) updateTag("VENDOR-LIST");
     return result;
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Failed to reject vendor";
@@ -53,10 +51,10 @@ export const blockVendor = async (vendorId: string, reason: string): Promise<any
   try {
     const result = await serverFetch(`/vendor/${vendorId}/block`, {
       method: "PATCH",
-      body: JSON.stringify({ reason }),
+      body: { reason },
+      updateTag: "VENDOR-LIST",
     });
 
-    if (result?.success) updateTag("VENDOR-LIST");
     return result;
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Failed to block vendor";
@@ -69,10 +67,10 @@ export const unblockVendor = async (vendorId: string, reason: string): Promise<a
   try {
     const result = await serverFetch(`/vendor/${vendorId}/unblock`, {
       method: "PATCH",
-      body: JSON.stringify({ reason }),
+      body: { reason },
+      updateTag: "VENDOR-LIST",
     });
 
-    if (result?.success) updateTag("VENDOR-LIST");
     return result;
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Failed to unblock vendor";

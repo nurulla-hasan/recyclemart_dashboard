@@ -7,9 +7,6 @@ export const getDashboardStats = async () => {
   try {
     const result = await serverFetch('/admin/stats', {
       method: 'GET',
-      next: {
-        revalidate: 300, // Revalidate every 5 minutes
-      },
     });
 
     return result;

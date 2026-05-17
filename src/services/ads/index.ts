@@ -3,12 +3,10 @@
 
 import { buildQueryString } from "@/lib/buildQueryString";
 import { serverFetch } from "@/lib/fetcher";
-import { updateTag } from "next/cache";
 
 export const getAllAds = async (query: Record<string, string | string[] | undefined> = {}) => {
   try {
     return await serverFetch(`/ad/admin${buildQueryString(query)}`, {
-      revalidate: 300,
       tags: ["AD-LIST"],
     });
   } catch {
@@ -20,8 +18,8 @@ export const approveAd = async (adId: string) => {
   try {
     const res = await serverFetch(`/ad/${adId}/approve`, {
       method: "PATCH",
+      updateTag: "AD-LIST",
     });
-    if (res.success) updateTag("AD-LIST");
     return res;
   } catch (error: any) {
     return { success: false, message: error?.message || "Failed to approve ad" };
@@ -32,9 +30,9 @@ export const rejectAd = async (adId: string, data: { reason: string; note?: stri
   try {
     const res = await serverFetch(`/ad/${adId}/reject`, {
       method: "PATCH",
-      body: JSON.stringify(data),
+      body: data,
+      updateTag: "AD-LIST",
     });
-    if (res.success) updateTag("AD-LIST");
     return res;
   } catch (error: any) {
     return { success: false, message: error?.message || "Failed to reject ad" };
@@ -45,8 +43,8 @@ export const deleteAd = async (adId: string) => {
   try {
     const res = await serverFetch(`/ad/${adId}`, {
       method: "DELETE",
+      updateTag: "AD-LIST",
     });
-    if (res.success) updateTag("AD-LIST");
     return res;
   } catch (error: any) {
     return { success: false, message: error?.message || "Failed to delete ad" };

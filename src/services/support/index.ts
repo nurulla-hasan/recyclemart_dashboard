@@ -4,13 +4,11 @@
 
 import { buildQueryString } from "@/lib/buildQueryString";
 import { serverFetch } from "@/lib/fetcher";
-import { updateTag } from "next/cache";
 
 // GET ALL CONTACTS/TICKETS
 export const getAllContacts = async (query: Record<string, string | string[] | undefined> = {}) => {
   try {
     return await serverFetch(`/contact${buildQueryString(query)}`, {
-      revalidate: 300,
       tags: ["CONTACT-LIST"],
     });
   } catch {
@@ -23,11 +21,9 @@ export const sendReplyEmail = async (data: { email: string; subject: string; mes
   try {
     const res = await serverFetch("/contact/send-email", {
       method: "POST",
-      body: JSON.stringify(data),
+      body: data,
+      updateTag: "CONTACT-LIST",
     });
-    if (res.success) {
-      updateTag("CONTACT-LIST");
-    }
     return res;
   } catch (error: any) {
     return { success: false, message: error?.message || "Failed to send email" };

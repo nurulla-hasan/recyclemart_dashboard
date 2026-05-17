@@ -4,13 +4,11 @@
 
 import { buildQueryString } from "@/lib/buildQueryString";
 import { serverFetch } from "@/lib/fetcher";
-import { updateTag } from "next/cache";
 
 // GET ALL ADMINS
 export const getAllAdmins = async (query: Record<string, string | string[] | undefined> = {}) => {
   try {
     return await serverFetch(`/admin${buildQueryString(query)}`, {
-      revalidate: 300,
       tags: ["ADMIN-LIST"],
     });
   } catch {
@@ -23,9 +21,9 @@ export const createAdmin = async (data: any) => {
   try {
     const res = await serverFetch("/admin", {
       method: "POST",
-      body: JSON.stringify(data),
+      body: data,
+      updateTag: "ADMIN-LIST",
     });
-    if (res.success) updateTag("ADMIN-LIST");
     return res;
   } catch (error: any) {
     return { success: false, message: error?.message || "Failed to create admin" };
@@ -37,9 +35,9 @@ export const updateAdmin = async (id: string, data: any) => {
   try {
     const res = await serverFetch(`/admin/${id}`, {
       method: "PATCH",
-      body: JSON.stringify(data),
+      body: data,
+      updateTag: "ADMIN-LIST",
     });
-    if (res.success) updateTag("ADMIN-LIST");
     return res;
   } catch (error: any) {
     return { success: false, message: error?.message || "Failed to update admin" };
@@ -51,8 +49,8 @@ export const deleteAdmin = async (id: string) => {
   try {
     const res = await serverFetch(`/admin/${id}`, {
       method: "DELETE",
+      updateTag: "ADMIN-LIST",
     });
-    if (res.success) updateTag("ADMIN-LIST");
     return res;
   } catch (error: any) {
     return { success: false, message: error?.message || "Failed to delete admin" };

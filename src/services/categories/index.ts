@@ -3,13 +3,11 @@
 
 import { buildQueryString } from "@/lib/buildQueryString";
 import { serverFetch } from "@/lib/fetcher";
-import { updateTag } from "next/cache";
 
 // GET ALL CATEGORIES
 export const getAllCategories = async (query: Record<string, string | string[] | undefined> = {}) => {
   try {
     return await serverFetch(`/category${buildQueryString(query)}`, {
-      revalidate: 300,
       tags: ["CATEGORY-LIST"],
     });
   } catch {
@@ -23,8 +21,8 @@ export const createCategory = async (formData: FormData) => {
     const res = await serverFetch("/category", {
       method: "POST",
       body: formData, // serverFetch should handle FormData
+      updateTag: "CATEGORY-LIST",
     });
-    if (res.success) updateTag("CATEGORY-LIST");
     return res;
   } catch (error: any) {
     return { success: false, message: error?.message || "Failed to create category" };
@@ -37,8 +35,8 @@ export const updateCategory = async (categoryId: string, formData: FormData) => 
     const res = await serverFetch(`/category/${categoryId}`, {
       method: "PUT",
       body: formData,
+      updateTag: "CATEGORY-LIST",
     });
-    if (res.success) updateTag("CATEGORY-LIST");
     return res;
   } catch (error: any) {
     return { success: false, message: error?.message || "Failed to update category" };
@@ -50,8 +48,8 @@ export const deleteCategory = async (categoryId: string) => {
   try {
     const res = await serverFetch(`/category/${categoryId}`, {
       method: "DELETE",
+      updateTag: "CATEGORY-LIST",
     });
-    if (res.success) updateTag("CATEGORY-LIST");
     return res;
   } catch (error: any) {
     return { success: false, message: error?.message || "Failed to delete category" };
