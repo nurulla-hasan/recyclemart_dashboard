@@ -24,3 +24,16 @@ export const toggleUserBlock = async (id: string) => {
     return { success: false, message: "Something went wrong" };
   }
 };
+
+export const deleteUser = async (id: string) => {
+  try {
+    const res = await serverFetch(`/admin/users/${id}`, {
+      method: "DELETE",
+      updateTag: ["USER-LIST", "VENDOR-LIST", "AD-LIST"],
+    });
+    return res;
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Failed to delete user";
+    return { success: false, message };
+  }
+};

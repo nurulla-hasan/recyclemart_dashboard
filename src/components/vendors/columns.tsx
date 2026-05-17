@@ -35,14 +35,14 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { MoreHorizontal, Check, X, Ban, LockOpen, Loader2, Eye, MapPin, Calendar, FileText, User, Phone, Mail } from "lucide-react";
+import { MoreHorizontal, Check, X, Ban, LockOpen, Loader2, Eye, MapPin, Calendar, FileText, User, Phone, Mail, Trash2 } from "lucide-react";
 import { formatDate, SuccessToast, ErrorToast } from "@/lib/utils";
 import { Vendor } from "@/types/vendors.type";
-import { approveVendor, rejectVendor, blockVendor, unblockVendor } from "@/services/vendors";
+import { approveVendor, rejectVendor, blockVendor, unblockVendor, deleteVendor } from "@/services/vendors";
 
 const VendorActions = ({ vendor }: { vendor: Vendor }) => {
   const [loading, setLoading] = useState(false);
-  const [action, setAction] = useState<"approve" | "reject" | "block" | "unblock" | "view" | null>(null);
+  const [action, setAction] = useState<"approve" | "reject" | "block" | "unblock" | "delete" | "view" | null>(null);
   const [reason, setReason] = useState("");
 
   const isOpen = (currentAction: typeof action) => action === currentAction;
@@ -75,10 +75,12 @@ const VendorActions = ({ vendor }: { vendor: Vendor }) => {
            return;
         }
         res = await blockVendor(vendor._id, reason);
+      } else if (action === "delete") {
+        res = await deleteVendor(vendor._id);
       }
 
       if (res?.success) {
-        SuccessToast(`Vendor ${action}ed successfully`);
+        SuccessToast(action === "delete" ? "Vendor deleted successfully" : `Vendor ${action}ed successfully`);
         resetState();
       } else {
         ErrorToast(res?.message || "Something went wrong");
@@ -125,6 +127,13 @@ const VendorActions = ({ vendor }: { vendor: Vendor }) => {
               <LockOpen className="text-blue-500" /> Unblock
             </DropdownMenuItem>
           )}
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onClick={() => setAction("delete")}
+            className="text-destructive focus:text-destructive"
+          >
+            <Trash2 className="text-destructive" /> Delete
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
@@ -286,6 +295,31 @@ const VendorActions = ({ vendor }: { vendor: Vendor }) => {
             <AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={(e) => { e.preventDefault(); handleAction(); }} disabled={loading} className="bg-blue-600 hover:bg-blue-700">
               {loading && <Loader2 className="animate-spin" />} Unblock
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Confirmation */}
+      <AlertDialog open={isOpen("delete")} onOpenChange={(open) => !open && resetState()}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Vendor?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will delete the vendor profile, remove the owner from dashboard user lists, and archive their ads.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                handleAction();
+              }}
+              disabled={loading}
+              className="bg-destructive hover:bg-destructive/90"
+            >
+              {loading && <Loader2 className="animate-spin" />} Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

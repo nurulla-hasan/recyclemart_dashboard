@@ -78,3 +78,18 @@ export const unblockVendor = async (vendorId: string, reason: string): Promise<a
   }
 };
 
+// DELETE VENDOR
+export const deleteVendor = async (vendorId: string): Promise<any> => {
+  try {
+    const result = await serverFetch(`/vendor/${vendorId}`, {
+      method: "DELETE",
+      updateTag: ["VENDOR-LIST", "USER-LIST", "AD-LIST"],
+    });
+
+    return result;
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Failed to delete vendor";
+    return { success: false, message };
+  }
+};
+

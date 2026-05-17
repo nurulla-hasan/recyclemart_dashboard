@@ -6,9 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { formatDate, getInitials, SuccessToast, ErrorToast } from "@/lib/utils";
 import { User } from "@/types/users.type";
 import { useState } from "react";
-import { toggleUserBlock } from "@/services/users";
+import { deleteUser, toggleUserBlock } from "@/services/users";
 import { Button } from "@/components/ui/button";
-import { Ban, LockOpen, Loader2 } from "lucide-react";
+import { Ban, LockOpen, Loader2, Trash2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,7 +22,7 @@ import {
 
 const UserActions = ({ user }: { user: User }) => {
   const [loading, setLoading] = useState(false);
-  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [action, setAction] = useState<"toggle" | "delete" | null>(null);
 
   const handleToggleBlock = async () => {
     setLoading(true);
@@ -30,7 +30,24 @@ const UserActions = ({ user }: { user: User }) => {
       const res = await toggleUserBlock(user._id);
       if (res.success) {
         SuccessToast(`User ${user.isActive ? "blocked" : "unblocked"} successfully`);
-        setIsAlertOpen(false);
+        setAction(null);
+      } else {
+        ErrorToast(res.message || "Something went wrong");
+      }
+    } catch {
+      ErrorToast("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setLoading(true);
+    try {
+      const res = await deleteUser(user._id);
+      if (res.success) {
+        SuccessToast("User deleted successfully");
+        setAction(null);
       } else {
         ErrorToast(res.message || "Something went wrong");
       }
@@ -43,20 +60,30 @@ const UserActions = ({ user }: { user: User }) => {
 
   return (
     <>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => setIsAlertOpen(true)}
-        className={user.isActive ? "text-destructive hover:text-destructive hover:bg-destructive/10" : "text-blue-600 hover:text-blue-700 hover:bg-blue-50"}
-      >
-        {user.isActive ? (
-          <><Ban /> Block</>
-        ) : (
-          <><LockOpen /> Unblock</>
-        )}
-      </Button>
+      <div className="flex justify-end gap-1">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setAction("toggle")}
+          className={user.isActive ? "text-destructive hover:text-destructive hover:bg-destructive/10" : "text-blue-600 hover:text-blue-700 hover:bg-blue-50"}
+        >
+          {user.isActive ? (
+            <><Ban /> </>
+          ) : (
+            <><LockOpen /> </>
+          )}
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setAction("delete")}
+          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+        >
+          <Trash2 />
+        </Button>
+      </div>
 
-      <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+      <AlertDialog open={action === "toggle"} onOpenChange={(open) => !open && setAction(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
@@ -81,6 +108,31 @@ const UserActions = ({ user }: { user: User }) => {
             >
               {loading && <Loader2 className="animate-spin" />}
               Confirm
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={action === "delete"} onOpenChange={(open) => !open && setAction(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete User?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will remove the user from dashboard lists, delete any vendor profile tied to them, and archive their ads.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                handleDelete();
+              }}
+              disabled={loading}
+              className="bg-destructive hover:bg-destructive/90"
+            >
+              {loading && <Loader2 className="animate-spin" />}
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
