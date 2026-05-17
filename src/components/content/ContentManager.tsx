@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, Upload, Image as ImageIcon, Link as LinkIcon, MessageSquare, Save, ChevronRight, Plus, Trash2, Sparkles } from "lucide-react";
-import { upsertExtraData, updateExtraLink, updateExtraHeading } from "@/services/extra-data";
+import { upsertExtraData, updateExtraLink, updateExtraHeading, updateWebsiteLogo } from "@/services/extra-data";
 import { SuccessToast, ErrorToast } from "@/lib/utils";
 
 interface ExtraData {
@@ -22,6 +22,7 @@ interface ExtraData {
   link1?: string;
   link2?: string;
   heading?: string[];
+  websiteLogo?: string;
 }
 
 interface ContentManagerProps {
@@ -36,6 +37,7 @@ export function ContentManager({ initialData }: ContentManagerProps) {
   const [currentCarouselIndex, setCurrentCarouselIndex] = useState(1);
   const [updatingLink, setUpdatingLink] = useState<string | null>(null);
   const [updatingHeading, setUpdatingHeading] = useState(false);
+  const [updatingLogo, setUpdatingLogo] = useState(false);
   const [headings, setHeadings] = useState<string[]>(initialData.heading || []);
   const [activeHeadingIndex, setActiveHeadingIndex] = useState(0);
 
@@ -124,6 +126,30 @@ export function ContentManager({ initialData }: ContentManagerProps) {
     }
   };
 
+  const handleLogoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUpdatingLogo(true);
+    const formData = new FormData();
+    formData.append("logo", file);
+
+    try {
+      const res = await updateWebsiteLogo(formData);
+      if (res.success) {
+        SuccessToast("Website logo updated successfully!");
+        setData((prev) => ({ ...prev, websiteLogo: res.data?.websiteLogo }));
+      } else {
+        ErrorToast(res.message || "Failed to update website logo");
+      }
+    } catch {
+      ErrorToast("Something went wrong");
+    } finally {
+      setUpdatingLogo(false);
+      e.target.value = "";
+    }
+  };
+
   const addHeading = () => {
     setHeadings([...headings, ""]);
   };
@@ -197,6 +223,60 @@ export function ContentManager({ initialData }: ContentManagerProps) {
         accept="image/*"
         onChange={handleFileChange}
       />
+
+      {/* Website Logo */}
+      <section className="space-y-4">
+        <div className="flex flex-col gap-2 border-b pb-3 sm:flex-row sm:items-center sm:justify-between">
+          <h2 className="flex items-center gap-2 text-lg font-semibold sm:text-xl">
+            <ImageIcon className="h-5 w-5 text-primary" />
+            Website Logo
+          </h2>
+          <p className="text-sm italic text-muted-foreground">Recommended: transparent PNG</p>
+        </div>
+
+        <Card className="p-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-4">
+              <div className="relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-muted">
+                {data.websiteLogo ? (
+                  <Image
+                    src={data.websiteLogo}
+                    alt="Website logo"
+                    fill
+                    className="object-contain p-2"
+                  />
+                ) : (
+                  <ImageIcon className="h-8 w-8 text-muted-foreground" />
+                )}
+              </div>
+              <div>
+                <p className="font-medium">Current website logo</p>
+                <p className="text-sm text-muted-foreground">
+                  This logo will appear on the website navbar.
+                </p>
+              </div>
+            </div>
+
+            <Button asChild disabled={updatingLogo} className="w-full sm:w-fit">
+              <Label className="cursor-pointer">
+                {updatingLogo ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Upload className="h-4 w-4" />
+                )}
+                Update Logo
+                <Input
+                  type="file"
+                  accept="image/*"
+                  className="sr-only"
+                  onChange={handleLogoChange}
+                  disabled={updatingLogo}
+                />
+              </Label>
+            </Button>
+          </div>
+        </Card>
+      </section>
 
       {/* Top Navbar Notices Editor */}
       <section className="space-y-4">

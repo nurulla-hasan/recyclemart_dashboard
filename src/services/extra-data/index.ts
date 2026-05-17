@@ -27,6 +27,19 @@ export const upsertExtraData = async (formData: FormData) => {
   }
 };
 
+export const updateWebsiteLogo = async (formData: FormData) => {
+  try {
+    const res = await serverFetch("/extra-data/logo", {
+      method: "POST",
+      body: formData,
+      updateTag: "extra-data",
+    });
+    return res;
+  } catch (error: any) {
+    return { success: false, message: error?.message || "Failed to update website logo" };
+  }
+};
+
 export const updateExtraLink = async (linkKey: string, link: string) => {
   try {
     const res = await serverFetch("/extra-data/link", {
