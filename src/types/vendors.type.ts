@@ -11,10 +11,10 @@ export interface Vendor {
   _id: string;
   user: VendorUser;
   storeName: string;
-  storeImage: string;
+  storeImage?: string;
   storeLocation: string;
-  tradeLicense: string;
-  tradeLicenseNumber: string;
+  tradeLicense?: string;
+  tradeLicenseNumber?: string;
   status: string; // e.g., PENDING, APPROVED
   approvalNote?: string | null;
   approvedAt?: string | null;

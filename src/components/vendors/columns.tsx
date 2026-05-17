@@ -191,7 +191,8 @@ const VendorActions = ({ vendor }: { vendor: Vendor }) => {
                   </div>
                   <div className="flex items-center gap-2 text-sm">
                     <FileText className="h-4 w-4 text-muted-foreground" />
-                    <span className="font-medium">Trade License:</span> {vendor.tradeLicenseNumber}
+                    <span className="font-medium">Trade License:</span>{" "}
+                    {vendor.tradeLicenseNumber || "Not provided"}
                   </div>
                   <div className="flex items-center gap-2 text-sm">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
@@ -233,9 +234,13 @@ const VendorActions = ({ vendor }: { vendor: Vendor }) => {
                     <p className="text-xs text-muted-foreground">Verification document provided by vendor</p>
                   </div>
                 </div>
-                <Button variant="outline" size="sm" asChild>
-                  <a href={vendor.tradeLicense} target="_blank" rel="noopener noreferrer">View Document</a>
-                </Button>
+                {vendor.tradeLicense ? (
+                  <Button variant="outline" size="sm" asChild>
+                    <a href={vendor.tradeLicense} target="_blank" rel="noopener noreferrer">View Document</a>
+                  </Button>
+                ) : (
+                  <Badge variant="outline">Not provided</Badge>
+                )}
               </div>
             </div>
 
