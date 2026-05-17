@@ -12,7 +12,7 @@ export default async function PackagesPage({ searchParams }: { searchParams: Sea
 
   return (
     <div className="space-y-6 p-1">
-      <div className="flex gap-4 flex-col md:flex-row justify-between">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <PageHeader
           title="Packages / Membership Plans"
           description="Manage membership plans and pricing packages."

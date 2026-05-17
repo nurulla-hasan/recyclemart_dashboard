@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function RootLayoutClient({
   children,
@@ -27,9 +26,9 @@ export default function RootLayoutClient({
         />
         
         {/* Page Content */}
-        <ScrollArea className="flex-1 h-[calc(100vh-80px)] p-4">
+        <div className="flex-1 h-[calc(100vh-80px)] overflow-y-auto p-4">
           {children}
-        </ScrollArea>
+        </div>
       </div>
     </div>
   );

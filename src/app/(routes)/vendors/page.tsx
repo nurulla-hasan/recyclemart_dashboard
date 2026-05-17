@@ -17,7 +17,7 @@ export default async function VendorsPage({
 
   return (
     <div className="space-y-6 p-1">
-      <div className="flex justify-between">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <PageHeader
           title="Vendor Management"
           description="Manage vendors, verify stores, and handle approvals."

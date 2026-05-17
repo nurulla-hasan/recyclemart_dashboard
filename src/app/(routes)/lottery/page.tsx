@@ -23,7 +23,7 @@ export default async function LotteryManagement() {
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-4 flex-col md:flex-row md:items-center justify-between">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
        <PageHeader title="Lottery Management" description="Create and manage your lottery campaigns."/>
         <Sheet>
           <SheetTrigger asChild>

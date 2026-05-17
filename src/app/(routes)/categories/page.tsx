@@ -12,7 +12,7 @@ export default async function CategoriesPage(props: {
 
   return (
     <div className="space-y-6">
-      <div className="flex gap-4 flex-col md:flex-row md:items-center justify-between">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <PageHeader
           title="Category & Subcategory"
           description="Manage product categories and subcategories structure."

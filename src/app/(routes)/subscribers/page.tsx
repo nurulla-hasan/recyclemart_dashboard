@@ -11,7 +11,7 @@ export default async function SubscribersPage({searchParams}: {searchParams: Sea
 
   return (
     <div className="space-y-6 p-1">
-      <div className="flex justify-between">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <PageHeader
           title="Subscriber Management"
           description="Manage subscribers here."

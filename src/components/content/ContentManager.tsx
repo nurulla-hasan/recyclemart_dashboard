@@ -200,9 +200,9 @@ export function ContentManager({ initialData }: ContentManagerProps) {
 
       {/* Top Navbar Notices Editor */}
       <section className="space-y-4">
-        <div className="flex items-center justify-between border-b pb-2">
-          <div className="flex items-center gap-4">
-            <h2 className="text-xl font-semibold flex items-center gap-2">
+        <div className="flex flex-col gap-3 border-b pb-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between lg:justify-start">
+            <h2 className="flex items-center gap-2 text-lg font-semibold sm:text-xl">
               <MessageSquare className="h-5 w-5 text-primary" />
               Top Navbar Notices (Scrolling)
             </h2>
@@ -210,7 +210,7 @@ export function ContentManager({ initialData }: ContentManagerProps) {
               variant="outline" 
               size="sm" 
               onClick={addHeading}
-              className="h-8 gap-1.5"
+              className="h-8 w-full gap-1.5 sm:w-fit"
             >
               <Plus className="h-3.5 w-3.5" />
               Add Notice
@@ -220,14 +220,14 @@ export function ContentManager({ initialData }: ContentManagerProps) {
             onClick={handleHeadingUpdate} 
             disabled={updatingHeading}
             size="sm"
-            className="gap-2"
+            className="w-full gap-2 lg:w-fit"
           >
             {updatingHeading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
             Save All Notices
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
           <Card className="p-4 overflow-hidden">
             <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
               {headings.length === 0 ? (
@@ -238,7 +238,7 @@ export function ContentManager({ initialData }: ContentManagerProps) {
                 </div>
               ) : (
                 headings.map((heading, idx) => (
-                  <div key={idx} className="flex items-end gap-2 group animate-in fade-in slide-in-from-left-2 duration-300">
+                  <div key={idx} className="group flex items-end gap-2 animate-in fade-in slide-in-from-left-2 duration-300">
                     <div className="flex-1 space-y-1.5">
                       <Label className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">
                         Notice {idx + 1}
@@ -257,7 +257,7 @@ export function ContentManager({ initialData }: ContentManagerProps) {
                     <Button 
                       variant="ghost" 
                       size="icon" 
-                      className="h-9 w-9 text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="h-9 w-9 shrink-0 text-destructive hover:bg-destructive/10 sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100"
                       onClick={() => removeHeading(idx)}
                     >
                       <Trash2 className="h-4 w-4" />
@@ -298,18 +298,18 @@ export function ContentManager({ initialData }: ContentManagerProps) {
 
       {/* Website Layout Preview */}
       <section className="space-y-4">
-        <div className="flex items-center justify-between border-b pb-2">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
+        <div className="flex flex-col gap-2 border-b pb-3 sm:flex-row sm:items-center sm:justify-between">
+          <h2 className="flex items-center gap-2 text-lg font-semibold sm:text-xl">
             Live Preview (Website Layout)
           </h2>
-          <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full animate-pulse">
+          <span className="w-fit rounded-full bg-primary/10 px-2 py-1 text-xs text-primary animate-pulse">
             Live View
           </span>
         </div>
         
-        <div className="grid grid-cols-12 gap-4 h-[400px] md:h-[500px]">
+        <div className="grid gap-4 md:grid-cols-12 md:h-[500px]">
           {/* Main Carousel Preview */}
-          <div className="col-span-8 relative rounded-2xl overflow-hidden bg-muted group border-2 border-primary/20">
+          <div className="relative aspect-video overflow-hidden rounded-2xl border-2 border-primary/20 bg-muted group md:col-span-8 md:aspect-auto">
             <div className="absolute top-2 left-2 z-10 bg-black/50 text-white text-[10px] px-2 py-1 rounded-md backdrop-blur-sm">
               Carousel {currentCarouselIndex}/5
             </div>
@@ -335,9 +335,9 @@ export function ContentManager({ initialData }: ContentManagerProps) {
           </div>
 
           {/* Side Ads Preview */}
-          <div className="col-span-4 flex flex-col gap-4">
+          <div className="grid gap-4 md:col-span-4 md:flex md:flex-col">
             {[6, 7].map((num) => (
-              <div key={num} className="flex-1 relative rounded-2xl overflow-hidden bg-muted group border-2 border-primary/20">
+              <div key={num} className="relative aspect-video flex-1 overflow-hidden rounded-2xl border-2 border-primary/20 bg-muted group md:aspect-auto">
                 <div className="absolute top-2 left-2 z-10 bg-black/50 text-white text-[10px] px-2 py-1 rounded-md backdrop-blur-sm">
                   Ad Banner {num === 6 ? 'A' : 'B'}
                 </div>
@@ -365,12 +365,12 @@ export function ContentManager({ initialData }: ContentManagerProps) {
       </section>
 
       <section className="space-y-4">
-        <div className="flex items-center justify-between border-b pb-2">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <span className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm">1-5</span>
+        <div className="flex flex-col gap-2 border-b pb-3 sm:flex-row sm:items-center sm:justify-between">
+          <h2 className="flex items-center gap-2 text-lg font-semibold sm:text-xl">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm text-primary">1-5</span>
             Homepage Carousel Banners
           </h2>
-          <p className="text-sm text-muted-foreground italic">Recommended size: 1920x600px</p>
+          <p className="text-sm italic text-muted-foreground">Recommended size: 1920x600px</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[1, 2, 3, 4, 5].map((num) => (
@@ -385,12 +385,12 @@ export function ContentManager({ initialData }: ContentManagerProps) {
       </section>
 
       <section className="space-y-4">
-        <div className="flex items-center justify-between border-b pb-2">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <span className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm">6-7</span>
+        <div className="flex flex-col gap-2 border-b pb-3 sm:flex-row sm:items-center sm:justify-between">
+          <h2 className="flex items-center gap-2 text-lg font-semibold sm:text-xl">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm text-primary">6-7</span>
             Advertisement Sections
           </h2>
-          <p className="text-sm text-muted-foreground italic">Recommended size: 400x400px</p>
+          <p className="text-sm italic text-muted-foreground">Recommended size: 400x400px</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[6, 7].map((num) => (
@@ -406,7 +406,7 @@ export function ContentManager({ initialData }: ContentManagerProps) {
                     <LinkIcon className="h-3 w-3" />
                     Ad Link (Click Destination)
                   </Label>
-                  <div className="flex gap-2">
+                  <div className="flex flex-col gap-2 sm:flex-row">
                     <Input 
                       placeholder="https://example.com/product"
                       defaultValue={(data as any)[`link${num - 5}`]}
@@ -414,6 +414,7 @@ export function ContentManager({ initialData }: ContentManagerProps) {
                     />
                     <Button 
                       size="sm"
+                      className="w-full sm:w-fit"
                       onClick={() => {
                         const val = (document.getElementById(`link-input-${num}`) as HTMLInputElement).value;
                         handleLinkUpdate(`link${num - 5}`, val);

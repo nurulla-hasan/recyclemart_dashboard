@@ -10,8 +10,8 @@ export default async function UsersPage({searchParams}: {searchParams: SearchPar
   const { data: users, meta } = await getAllUsers(params);
 
   return (
-    <div className="space-y-6 p-1">
-      <div className="flex justify-between">
+    <div className="space-y-6">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <PageHeader
           title="User Management"
           description="Manage users, roles, and permissions here."

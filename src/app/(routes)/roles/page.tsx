@@ -17,14 +17,14 @@ export default async function RolesPage({
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <PageHeader
           title="Admin & Role Management"
           description="Configure admin access levels and role-based permissions."
         />
 
         {isSuperAdmin && (
-          <div className="flex justify-end">
+          <div className="flex w-full justify-start lg:w-auto lg:justify-end">
             <AddAdminModal />
           </div>
         )}
